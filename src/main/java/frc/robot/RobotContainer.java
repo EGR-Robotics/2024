@@ -69,11 +69,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new TeleopSwerve(
-                s_Swerve,
-                () -> -driver.getRawAxis(translationAxis),
-                () -> -driver.getRawAxis(strafeAxis),
-                () -> -driver.getRawAxis(rotationAxis),
-                () -> false);
+        return new Auton(s_Swerve);
     }
 }
