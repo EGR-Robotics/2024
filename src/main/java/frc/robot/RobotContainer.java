@@ -47,14 +47,13 @@ public class RobotContainer {
      */
     public RobotContainer() {
         Arm armCommand = new Arm(
-            s_Arm,
-            () -> driver.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED : 
-                 driver.getRawButton(RIGHT_BUTTON_NUMBER) ? - (ARM_SPEED * 2) : 0,
-            () -> 0,
-            () -> false
-        );
+                s_Arm,
+                () -> driver.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED
+                        : driver.getRawButton(RIGHT_BUTTON_NUMBER) ? -(ARM_SPEED * 2) : 0);
 
         s_Arm.setDefaultCommand(armCommand);
+
+         
 
         s_Swerve.setDefaultCommand(
                 new TeleopSwerve(
