@@ -6,9 +6,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
+
+import frc.robot.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.robot.commands.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -20,8 +22,13 @@ import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    private static final int LEFT_BUTTON_NUMBER = 5; // Update with the correct button number
+    private static final int RIGHT_BUTTON_NUMBER = 6; // Update with the correct button number
+    private static final double ARM_SPEED = 0.25; // Adjust arm speed as needed
+
     /* Controllers */
     private final Joystick driver = new Joystick(0);
+    private final Joystick operator = new Joystick(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -33,11 +40,22 @@ public class RobotContainer {
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
+    private final ArmSubsystem s_Arm = new ArmSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        Arm armCommand = new Arm(
+            s_Arm,
+            () -> driver.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED : 
+                 driver.getRawButton(RIGHT_BUTTON_NUMBER) ? - (ARM_SPEED * 2) : 0,
+            () -> 0,
+            () -> false
+        );
+
+        s_Arm.setDefaultCommand(armCommand);
+
         s_Swerve.setDefaultCommand(
                 new TeleopSwerve(
                         s_Swerve,
