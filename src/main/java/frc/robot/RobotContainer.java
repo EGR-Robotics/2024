@@ -10,7 +10,8 @@ import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 
 import frc.robot.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.robot.commands.Arm;
+import frc.robot.robot.subsystems.arm.ShootSubsystem;
+import frc.robot.robot.subsystems.arm.IntakeSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,13 +35,19 @@ public class RobotContainer {
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
+    
+    private final int rightJoystickX = XboxController.Axis.kRightTrigger.value;
+    private final int leftJoystickX = XboxController.Axis.kLeftTrigger.value;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton intakeReverse = new JoystickButton(driver, XboxController.Button.kA.value);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
     private final ArmSubsystem s_Arm = new ArmSubsystem();
+    private final ShootSubsystem s_Shoot = new ShootSubsystem();
+    private final IntakeSubsystem s_Intake = new IntakeSubsystem();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -53,8 +60,18 @@ public class RobotContainer {
 
         s_Arm.setDefaultCommand(armCommand);
 
-         
+        Intake intakeCommand = new Intake(
+                s_Intake,
+                () -> driver.getRawAxis(leftJoystickX));
 
+        s_Intake.setDefaultCommand(intakeCommand);
+
+        Shoot shootCommand = new Shoot(
+                s_Shoot,
+                () -> driver.getRawAxis(rightJoystickX));
+
+        s_Shoot.setDefaultCommand(shootCommand);
+        
         s_Swerve.setDefaultCommand(
                 new TeleopSwerve(
                         s_Swerve,
@@ -78,6 +95,13 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        intakeReverse.whileTrue(
+            new Intake(
+                s_Intake,
+                () -> -0.3
+            )
+        );
     }
 
     /**
