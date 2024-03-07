@@ -17,6 +17,10 @@ public class IntakeSubsystem extends SubsystemBase {
         intake.set(ControlMode.PercentOutput, speed);
     }
 
+    public void stopIntake() {
+        intake.set(ControlMode.PercentOutput, 0);
+    }
+
     // public double getArmPosition() {
         // return armEncoder.getPosition();
     // }

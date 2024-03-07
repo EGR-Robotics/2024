@@ -29,13 +29,9 @@ public class ArmSubsystem extends SubsystemBase {
         rightArmMotor.set(ControlMode.PercentOutput, -speed);
     }
 
-    public void shoot() {
-        leftFly.set(ControlMode.PercentOutput, 0.5);
-        rightFly.set(ControlMode.PercentOutput, 0.5);
-    }
-
-    public void intake() {
-        intake.set(ControlMode.PercentOutput, 0.5);
+    public void stopArm() {
+        leftArmMotor.set(ControlMode.PercentOutput, 0);
+        rightArmMotor.set(ControlMode.PercentOutput, 0);
     }
 
     // public double getArmPosition() {

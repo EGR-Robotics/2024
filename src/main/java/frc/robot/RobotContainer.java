@@ -13,6 +13,8 @@ import frc.robot.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.robot.subsystems.arm.ShootSubsystem;
 import frc.robot.robot.subsystems.arm.IntakeSubsystem;
 
+import edu.wpi.first.wpilibj.Timer;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -41,7 +43,7 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton intakeReverse = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton intakeReverse = new JoystickButton(operator, XboxController.Button.kA.value);
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -55,20 +57,20 @@ public class RobotContainer {
     public RobotContainer() {
         Arm armCommand = new Arm(
                 s_Arm,
-                () -> driver.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED
-                        : driver.getRawButton(RIGHT_BUTTON_NUMBER) ? -(ARM_SPEED * 2) : 0);
+                () -> operator.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED
+                        : operator.getRawButton(RIGHT_BUTTON_NUMBER) ? -(ARM_SPEED * 2) : 0);
 
         s_Arm.setDefaultCommand(armCommand);
 
         Intake intakeCommand = new Intake(
                 s_Intake,
-                () -> driver.getRawAxis(leftJoystickX));
+                () -> operator.getRawAxis(leftJoystickX));
 
         s_Intake.setDefaultCommand(intakeCommand);
 
         Shoot shootCommand = new Shoot(
                 s_Shoot,
-                () -> driver.getRawAxis(rightJoystickX));
+                () -> operator.getRawAxis(rightJoystickX));
 
         s_Shoot.setDefaultCommand(shootCommand);
         
@@ -109,7 +111,7 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
-        return new Auton(s_Swerve);
+    public Command getAutonomousCommand(Timer timer) {
+        return new Auton(s_Swerve, s_Arm, s_Intake, s_Shoot, timer);
     }
 }

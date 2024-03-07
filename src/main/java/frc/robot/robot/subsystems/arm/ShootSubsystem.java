@@ -18,4 +18,9 @@ public class ShootSubsystem extends SubsystemBase {
         leftFly.set(ControlMode.PercentOutput, speed);
         rightFly.set(ControlMode.PercentOutput, speed);
     }
+
+    public void stopShoot() {
+        leftFly.set(ControlMode.PercentOutput, 0);
+        rightFly.set(ControlMode.PercentOutput, 0);
+    }
 }

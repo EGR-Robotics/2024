@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  
+  private Timer timer = new Timer();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -65,17 +65,19 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    timer.reset();
+    timer.start();
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(timer);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
 
   @Override
   public void teleopInit() {

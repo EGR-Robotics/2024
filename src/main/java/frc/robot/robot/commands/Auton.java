@@ -1,45 +1,49 @@
 package frc.robot.robot.commands;
 
+import frc.robot.robot.commands.*;
+
 import frc.robot.robot.Constants;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
-import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
+import frc.robot.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.robot.subsystems.arm.IntakeSubsystem;
+import frc.robot.robot.subsystems.arm.ShootSubsystem;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
+import edu.wpi.first.wpilibj.Timer;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class Auton extends Command {
     private RevSwerve s_Swerve;
+    private ArmSubsystem subsystem;
+    private IntakeSubsystem intake;
+    private ShootSubsystem shoot;
 
-    public Auton(RevSwerve s_Swerve) {
+    private Timer timer;
+
+    public Auton(RevSwerve s_Swerve, ArmSubsystem subsystem, IntakeSubsystem intake, ShootSubsystem shoot, Timer timer) {
         this.s_Swerve = s_Swerve;
+        this.subsystem = subsystem;
+        this.intake = intake;
+        this.shoot = shoot;
+
+        addRequirements(shoot);
+        addRequirements(subsystem);
+        addRequirements(intake);
         addRequirements(s_Swerve);
+    
+        this.timer = timer;
     }
 
     @Override
     public void execute() {
+        if(timer.get() < 5) {
+            intake.intake(0.5);
+        }
         
-
-
-        // DoubleSupplier translationSup = () -> 20;
-        // DoubleSupplier strafeSup = () -> 0;
-        // DoubleSupplier rotationSup = () -> 0;
-        // BooleanSupplier robotCentricSup = () -> false;;
-        
-        // /* Get Values, Deadband*/
-        // double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        // double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
-        // double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
-
-        // /* Drive */
-        // s_Swerve.drive(
-        //     new Translation2d(translationVal, strafeVal).times(RevSwerveConfig.maxSpeed), 
-        //     rotationVal * RevSwerveConfig.maxAngularVelocity, 
-        //     !robotCentricSup.getAsBoolean(), 
-        //     false
-        // );
+        if(timer.get() >= 5) {
+            intake.stopIntake();
+        }
     }
 }
