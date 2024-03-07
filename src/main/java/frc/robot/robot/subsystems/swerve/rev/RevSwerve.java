@@ -25,14 +25,14 @@ public class RevSwerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public RevSwerveModule[] mRevSwerveMods;
-    public Pigeon2 gyro;
+    // public Pigeon2 gyro;
 
     
 
     public RevSwerve() {
         
-        gyro = new Pigeon2(RevSwerveConstants.REV.pigeonID);
-        gyro.getConfigurator().apply(new Pigeon2Configuration());
+        // gyro = new Pigeon2(RevSwerveConstants.REV.pigeonID);
+        // gyro.getConfigurator().apply(new Pigeon2Configuration());
         
      
 
@@ -125,7 +125,7 @@ public class RevSwerve extends SubsystemBase {
         if(RevSwerveConfig.invertGyro) {
             deg = -deg;
         }
-        gyro.setYaw(deg);
+        // gyro.setYaw(deg);
         swerveOdometry.update(getYaw(), getModulePositions());  
     }
 
@@ -134,7 +134,8 @@ public class RevSwerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        return (RevSwerveConfig.invertGyro) ? Rotation2d.fromDegrees(gyro.getYaw().getValue()) : Rotation2d.fromDegrees(gyro.getYaw().getValue());
+        return Rotation2d.fromDegrees(0);
+        // return (RevSwerveConfig.invertGyro) ? Rotation2d.fromDegrees(gyro.getYaw().getValue()) : Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
     @Override
