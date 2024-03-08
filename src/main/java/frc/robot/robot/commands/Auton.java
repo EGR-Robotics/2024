@@ -23,25 +23,29 @@ public class Auton extends Command {
     private ArmSubsystem subsystem;
     private IntakeSubsystem intake;
     private ShootSubsystem shoot;
+    private ArmSubsystem arm;
 
     private Timer timer;
 
-    public Auton(RevSwerve s_Swerve, ArmSubsystem subsystem, IntakeSubsystem intake, ShootSubsystem shoot, Timer timer) {
+    public Auton(RevSwerve s_Swerve, ArmSubsystem subsystem, IntakeSubsystem intake, ShootSubsystem shoot,
+            Timer timer, ArmSubsystem arm) {
         this.s_Swerve = s_Swerve;
         this.subsystem = subsystem;
         this.intake = intake;
         this.shoot = shoot;
+        this.arm = arm;
 
         addRequirements(shoot);
         addRequirements(subsystem);
         addRequirements(intake);
         addRequirements(s_Swerve);
-    
+        addRequirements(arm);
+
         this.timer = timer;
     }
 
     private Translation2d getTranslation(DoubleSupplier translationSup, DoubleSupplier strafeSup) {
-        /* Get Values, Deadband*/
+        /* Get Values, Deadband */
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
 
@@ -54,22 +58,26 @@ public class Auton extends Command {
 
     @Override
     public void execute() {
-        if(timer.get() < 5) {
-             s_Swerve.drive(
-                getTranslation(
-                    () -> 5,
-                    () -> 0
-                ),
-                getRotation(() -> 0),
-                true,
-                true 
-             );
-        }
-        else if(timer.get() < 5) {
-            intake.intake(0.5);
-        }
-        else if(timer.get() < 6) {
+        if (timer.get() < 2) {
+            arm.moveArmWithEncoder(0, 0.11899);
+            shoot.shoot(1);
+        } else if (timer.get() < 1.5) {
+            arm.stopArm();
+            intake.intake(1);
+        } else if (timer.get() < 2) {
             intake.stopIntake();
+            shoot.stopShoot();
+
+           s_Swerve.drive(
+                    getTranslation(
+                            () -> -0.5,
+                            () -> -0.5),
+                    getRotation(() -> 0),
+                    true,
+                    true);
+        }
+        else if(timer.get() < 10) {
+            s_Swerve.stopDrive();
         }
     }
 }

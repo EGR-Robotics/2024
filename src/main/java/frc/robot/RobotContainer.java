@@ -1,10 +1,14 @@
 package frc.robot;
 
+import javax.xml.stream.events.Comment;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.robot.commands.*;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
@@ -30,8 +34,8 @@ public class RobotContainer {
     private static final double ARM_SPEED = 0.25; // Adjust arm speed as needed
 
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick operator = new Joystick(1);
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -42,8 +46,8 @@ public class RobotContainer {
     private final int leftJoystickX = XboxController.Axis.kLeftTrigger.value;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton intakeReverse = new JoystickButton(operator, XboxController.Button.kA.value);
+    // private final Trigger zeroGyro = driver.y();
+    // private final Trigger intakeReverse = operator.y();
 
     /* Subsystems */
     private final RevSwerve s_Swerve = new RevSwerve();
@@ -54,13 +58,20 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
+
+
     public RobotContainer() {
         Arm armCommand = new Arm(
                 s_Arm,
-                () -> operator.getRawButton(LEFT_BUTTON_NUMBER) ? ARM_SPEED
-                        : operator.getRawButton(RIGHT_BUTTON_NUMBER) ? -(ARM_SPEED * 2) : 0);
+                () -> operator.leftBumper().getAsBoolean()  ? ARM_SPEED
+                        : operator.rightBumper().getAsBoolean() ? -(ARM_SPEED * 2) : 0);
 
         s_Arm.setDefaultCommand(armCommand);
+
+        MoveArmCommand armEncoderCommand = new MoveArmCommand(s_Arm, () -> 0.11899);
+
+        operator.b().whileTrue(Commands.run(() -> s_Arm.moveArmWithEncoder(0, 0.11899), s_Arm));//armEncoderCommand);
+        //operator.y().whileTrue(Commands.run(() -> s_Arm.moveArmWithEncoder(0, 0.11899), s_Arm));
 
         Intake intakeCommand = new Intake(
                 s_Intake,
@@ -96,9 +107,9 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        driver.y().onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); // Reset Gyro
 
-        intakeReverse.whileTrue(
+        operator.a().whileTrue( // Reverse Intake
             new Intake(
                 s_Intake,
                 () -> -0.3
@@ -112,6 +123,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand(Timer timer) {
-        return new Auton(s_Swerve, s_Arm, s_Intake, s_Shoot, timer);
+        return new Auton(s_Swerve, s_Arm, s_Intake, s_Shoot, timer, s_Arm);
     }
 }

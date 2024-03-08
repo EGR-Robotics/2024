@@ -2,6 +2,8 @@ package frc.robot.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import javax.naming.InsufficientResourcesException;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,14 +13,14 @@ import com.revrobotics.CANEncoder;
 
 import frc.robot.robot.subsystems.arm.ArmSubsystem;
 
-public class Arm extends Command {
+public class MoveArmCommand extends Command {
     private DoubleSupplier armSup;
 
     private CANEncoder armEncoder; // Declare Encoder object
 
     private ArmSubsystem subsystem;
 
-    public Arm(ArmSubsystem subsystem, DoubleSupplier armSup) {
+    public MoveArmCommand(ArmSubsystem subsystem, DoubleSupplier armSup) {
         this.subsystem = subsystem;
         addRequirements(subsystem);
 
@@ -28,7 +30,8 @@ public class Arm extends Command {
     @Override
     public void execute() {
         SmartDashboard.putNumber("Arm Encoder", subsystem.getArmEncoder());
-        subsystem.moveArm(armSup.getAsDouble());
+        subsystem.moveArmWithEncoder(0, armSup.getAsDouble());
     }
 
 }
+

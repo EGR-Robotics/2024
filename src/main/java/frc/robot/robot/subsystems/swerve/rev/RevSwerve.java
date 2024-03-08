@@ -84,7 +84,23 @@ public class RevSwerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.getModuleNumber()], isOpenLoop);
         }
 
-    }    
+    }
+
+    public void stopDrive() {
+        ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds(
+                    0,
+                    0,
+                    0);
+        desiredChassisSpeeds = correctForDynamics(desiredChassisSpeeds);
+
+        SwerveModuleState[] swerveModuleStates = RevSwerveConfig.swerveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, RevSwerveConfig.maxSpeed);
+        
+        for(SwerveModule mod : mSwerveMods){
+            mod.setDesiredState(swerveModuleStates[mod.getModuleNumber()], true);
+        }
+    }
+
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
 
