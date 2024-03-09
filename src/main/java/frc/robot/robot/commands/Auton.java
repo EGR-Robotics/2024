@@ -1,7 +1,5 @@
 package frc.robot.robot.commands;
 
-import frc.robot.robot.commands.*;
-
 import frc.robot.robot.Constants;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
 import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
@@ -13,33 +11,33 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 import java.util.function.DoubleSupplier;
 
 public class Auton extends Command {
-    private RevSwerve s_Swerve;
-    private ArmSubsystem subsystem;
-    private IntakeSubsystem intake;
-    private ShootSubsystem shoot;
-    private ArmSubsystem arm;
+    private RevSwerve swerveSubsystem;
+    private IntakeSubsystem intakeSubsystem;
+    private ShootSubsystem shootSubsystem;
+    private ArmSubsystem armSubsystem;
 
     private Timer timer;
 
-    public Auton(RevSwerve s_Swerve, ArmSubsystem subsystem, IntakeSubsystem intake, ShootSubsystem shoot,
-            Timer timer, ArmSubsystem arm) {
-        this.s_Swerve = s_Swerve;
-        this.subsystem = subsystem;
-        this.intake = intake;
-        this.shoot = shoot;
-        this.arm = arm;
+    public Auton(
+        RevSwerve swerveSubsystem,
+        IntakeSubsystem intakeSubsystem,
+        ShootSubsystem shootSubsystem,
+        ArmSubsystem armSubsystem,
+        Timer timer
+    ) {
+        this.swerveSubsystem = swerveSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
+        this.shootSubsystem = shootSubsystem;
+        this.armSubsystem = armSubsystem;
 
-        addRequirements(shoot);
-        addRequirements(subsystem);
-        addRequirements(intake);
-        addRequirements(s_Swerve);
-        addRequirements(arm);
+        addRequirements(swerveSubsystem);
+        addRequirements(intakeSubsystem);
+        addRequirements(shootSubsystem);
+        addRequirements(armSubsystem);
 
         this.timer = timer;
     }
@@ -59,25 +57,21 @@ public class Auton extends Command {
     @Override
     public void execute() {
         if (timer.get() < 2) {
-            arm.moveArmWithEncoder(0, 0.11899);
-            shoot.shoot(1);
-        } else if (timer.get() < 1.5) {
-            arm.stopArm();
-            intake.intake(1);
-        } else if (timer.get() < 2) {
-            intake.stopIntake();
-            shoot.stopShoot();
-
-           s_Swerve.drive(
-                    getTranslation(
-                            () -> -0.5,
-                            () -> -0.5),
-                    getRotation(() -> 0),
-                    true,
-                    true);
+            armSubsystem.moveArm(5, 0.326122);
+        } 
+        else if(timer.get() < 3) {
+            shootSubsystem.shoot(1);
+        //    s_Swerve.drive(
+        //             getTranslation(
+        //                     () -> -0.5,
+        //                     () -> -0.5),
+        //             getRotation(() -> 0),
+        //             true,
+        //             true);
         }
-        else if(timer.get() < 10) {
-            s_Swerve.stopDrive();
+        else {
+            intakeSubsystem.stopIntake();
+            shootSubsystem.stopShoot();
         }
     }
 }

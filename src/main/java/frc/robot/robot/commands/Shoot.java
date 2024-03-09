@@ -4,23 +4,21 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-import com.revrobotics.CANEncoder;
-
 import frc.robot.robot.subsystems.arm.ShootSubsystem;
 
 public class Shoot extends Command {
-    private ShootSubsystem subsystem;
-    private DoubleSupplier shootSup;
+    private ShootSubsystem shootSubsystem;
+    private DoubleSupplier speedSup;
 
-    public Shoot(ShootSubsystem subsystem, DoubleSupplier shootSup) {
-        this.subsystem = subsystem;
-        this.shootSup = shootSup;
+    public Shoot(ShootSubsystem shootSubsystem, DoubleSupplier speedSup) {
+        this.shootSubsystem = shootSubsystem;
+        this.speedSup = speedSup;
 
-        addRequirements(subsystem);
+        addRequirements(shootSubsystem);
     }
 
     @Override
     public void execute() {
-        subsystem.shoot(shootSup.getAsDouble());
+        shootSubsystem.shoot(speedSup.getAsDouble());
     }
 }
