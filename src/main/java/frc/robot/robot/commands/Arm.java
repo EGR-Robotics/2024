@@ -33,7 +33,7 @@ public class Arm extends Command {
         SmartDashboard.putNumber("Arm Encoder", armSubsystem.getArmEncoder());
 
         if(angleSup != null)
-            armSubsystem.moveArm(0, angleSup.getAsDouble());
+            armSubsystem.moveArm(speedSup.getAsDouble(), angleSup.getAsDouble());
         else
             armSubsystem.moveArm(speedSup.getAsDouble());
     }

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 // Commands
@@ -52,9 +53,13 @@ public class RobotContainer {
 
         armSubsystem.setDefaultCommand(armCommand);
 
-        // Move the arm to a certain location
-        Arm armEncoderCommand = new Arm(armSubsystem, () -> 5, () -> 0.11899);
-        operator.b().whileTrue(armEncoderCommand);
+        // Move the arm to the amp
+        Arm amp = new Arm(armSubsystem, () -> 5, () -> 0.11899);
+        operator.b().whileTrue(amp);
+
+        // Move the arm to the speaker
+        Arm speaker = new Arm(armSubsystem, () -> 5, () -> 0.33);
+        operator.x().whileTrue(speaker);
 
         // Intake
         Intake intakeCommand = new Intake(intakeSubsystem, () -> operator.getRawAxis(leftJoystick));
@@ -83,6 +88,8 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        driver.y().onTrue(new InstantCommand(() -> swerveSubsystem.zeroGyro())); // Reset Gyro
+
         // Reverse Intake
         operator.a().whileTrue(
             new Intake(
@@ -92,8 +99,9 @@ public class RobotContainer {
         );
     }
 
-    public Command getAutonomousCommand(Timer timer) {
+    public Command getAutonomousCommand(Timer timer, int autonNumber) {
         return new Auton(
+            autonNumber,
             swerveSubsystem,
             intakeSubsystem,
             shootSubsystem,
