@@ -1,4 +1,4 @@
-package frc.robot.robot.subsystems.swerve.rev;
+package frc.robot.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -19,8 +19,9 @@ public class RevSwerveConfig {
 
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
-    public static final COTSNeoSwerveConstants chosenModule = COTSNeoSwerveConstants
-            .SDSMK4i(COTSNeoSwerveConstants.driveGearRatios.SDSMK4i_L2);
+    public static final COTSNeoSwerveConstants chosenModule = (
+        COTSNeoSwerveConstants.SDSMK4i(COTSNeoSwerveConstants.driveGearRatios.SDSMK4i_L2)
+    );
 
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(23.75);
@@ -99,7 +100,7 @@ public class RevSwerveConfig {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 2;
+    public static final double maxSpeed = 10;
     /** Radians per Second */
     public static final double maxAngularVelocity = 9;
 

@@ -1,31 +1,28 @@
 package frc.robot;
+
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+// Auton
+import edu.wpi.first.wpilibj.Timer; // TODO: delete this when switched to pathplanner
+
+// Logging
 import frc.robot.lib.util.loggingUtil.LogManager;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// Commands
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-    SendableChooser<Command> autoChooser;
 
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
 
-    private Timer timer = new Timer();
+    private Timer timer = new Timer(); // Timer for auton
 
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
-        
-        autoChooser = new SendableChooser<Command>();
-        autoChooser.addOption("Center Speaker", robotContainer.getAutonomousCommand(timer, 1));
-        autoChooser.addOption("Short-Side Speaker", robotContainer.getAutonomousCommand(timer, 2));
-        autoChooser.addOption("Long-Side Speaker", robotContainer.getAutonomousCommand(timer, 3));
-        SmartDashboard.putData("Auto Choices", autoChooser);
     }
 
     @Override
@@ -35,25 +32,24 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {
-    }
+    public void disabledPeriodic() {}
 
     @Override
     public void autonomousInit() {
         timer.reset();
         timer.start();
 
-        autonomousCommand = (Command) autoChooser.getSelected();
+        autonomousCommand = robotContainer.getAutonomousCommand();
+        autonomousCommand.schedule();
     }
 
     @Override
     public void autonomousPeriodic() {
-        if (autonomousCommand != null)
-            autonomousCommand.schedule();
+        // if (autonomousCommand != null)
+            // autonomousCommand.schedule();
     }
 
     @Override
@@ -63,8 +59,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void testInit() {
@@ -72,6 +67,5 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 }

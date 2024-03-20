@@ -1,8 +1,8 @@
 package frc.robot.robot.commands;
 
 import frc.robot.robot.Constants;
-import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
-import frc.robot.robot.subsystems.swerve.rev.RevSwerveConfig;
+import frc.robot.robot.subsystems.swerve.RevSwerve;
+import frc.robot.robot.subsystems.swerve.RevSwerveConfig;
 import frc.robot.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.robot.subsystems.arm.IntakeSubsystem;
 import frc.robot.robot.subsystems.arm.ShootSubsystem;
@@ -56,18 +56,6 @@ public class Auton extends Command {
 
     private double getRotation(DoubleSupplier rotationSup) {
         return MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
-    }
-
-    private void shootSpeaker(Timer timer) {
-        if (timer.get() < 2) {
-            armSubsystem.moveArm(1, 0.32);
-        } 
-        else if(timer.get() < 3) {
-            shootSubsystem.shoot(1);
-        }
-        else if(timer.get() < 4) {
-            intakeSubsystem.intake(1);
-        }
     }
 
     // Left side of speaker

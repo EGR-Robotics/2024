@@ -1,23 +1,31 @@
 package frc.robot;
 
+// Controllers
 import edu.wpi.first.wpilibj.XboxController;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 // Commands
 import frc.robot.robot.commands.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 // Subsystems
-import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
+import frc.robot.robot.subsystems.swerve.RevSwerve;
 import frc.robot.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.robot.subsystems.arm.ShootSubsystem;
 import frc.robot.robot.subsystems.arm.IntakeSubsystem;
 
-import edu.wpi.first.wpilibj.Timer;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+// import edu.wpi.first.wpilibj.Timer;
 
 public class RobotContainer {
+    private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+
     private static final double ARM_SPEED = 0.25;
 
     // Controllers
@@ -39,6 +47,16 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     public RobotContainer() {
+        // Configure commands for PathPlanner auto
+        NamedCommands.registerCommand("Shoot", new InstantCommand(() -> shootSubsystem.shoot(1)));
+        NamedCommands.registerCommand("Intake", new InstantCommand(() -> intakeSubsystem.intake(1)));
+        NamedCommands.registerCommand("Arm To Speaker", new InstantCommand(() -> armSubsystem.moveArm(1, 0.32)));
+    
+        // Configure autos
+        SmartDashboard.putData("Autonomous Mode", autoChooser);
+
+        autoChooser.addOption("Center", new PathPlannerAuto("Center"));
+
         // Move the arm up and down
         Arm armCommand = new Arm(
             armSubsystem,
@@ -63,14 +81,12 @@ public class RobotContainer {
 
         // Intake
         Intake intakeCommand = new Intake(intakeSubsystem, () -> operator.getRawAxis(leftJoystick));
-
         intakeSubsystem.setDefaultCommand(intakeCommand);
 
         // Shoot
         Shoot shootCommand = new Shoot(
                 shootSubsystem,
                 () -> operator.getRawAxis(rightJoystick));
-
         shootSubsystem.setDefaultCommand(shootCommand);
 
         // Move
@@ -85,6 +101,7 @@ public class RobotContainer {
         );
 
         configureButtonBindings();
+
     }
 
     private void configureButtonBindings() {
@@ -99,14 +116,16 @@ public class RobotContainer {
         );
     }
 
-    public Command getAutonomousCommand(Timer timer, int autonNumber) {
-        return new Auton(
-            autonNumber,
-            swerveSubsystem,
-            intakeSubsystem,
-            shootSubsystem,
-            armSubsystem, 
-            timer
-        );
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+
+        // return new Auton(
+        //     autonNumber,
+        //     swerveSubsystem,
+        //     intakeSubsystem,
+        //     shootSubsystem,
+        //     armSubsystem, 
+        //     timer
+        // );
     }
 }

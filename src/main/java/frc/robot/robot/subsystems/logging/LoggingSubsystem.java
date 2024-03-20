@@ -2,7 +2,7 @@ package frc.robot.robot.subsystems.logging;
 
 import frc.robot.lib.util.loggingUtil.LogManager;
 
-import frc.robot.robot.subsystems.swerve.rev.RevSwerve;
+import frc.robot.robot.subsystems.swerve.RevSwerve;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LoggingSubsystem extends SubsystemBase {
@@ -43,6 +43,5 @@ public class LoggingSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateSwerveLogs();
-
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.robot.subsystems.swerve.rev;
+package frc.robot.robot.subsystems.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -137,6 +137,7 @@ public class RevSwerveModule implements SwerveModule {
     private void setAngle(SwerveModuleState desiredState) {
         if (Math.abs(desiredState.speedMetersPerSecond) <= (RevSwerveConfig.maxSpeed * 0.01)) {
             mAngleMotor.stopMotor();
+            
             return;
         }
 
@@ -185,13 +186,15 @@ public class RevSwerveModule implements SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                relDriveEncoder.getVelocity(),
-                getAngle());
+            relDriveEncoder.getVelocity(),
+            getAngle()
+        );
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-                relDriveEncoder.getPosition(),
-                getAngle());
+            relDriveEncoder.getPosition(),
+            getAngle()
+        );
     }
 }
