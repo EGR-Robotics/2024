@@ -7,20 +7,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.robot.subsystems.arm.ArmSubsystem;
 
-public class Arm extends Command {
+public class MoveArm extends Command {
     private DoubleSupplier speedSup;
     private DoubleSupplier angleSup;
 
     private ArmSubsystem armSubsystem;
 
-    public Arm(ArmSubsystem subsystem, DoubleSupplier speedSup) {
+    public MoveArm(ArmSubsystem subsystem, DoubleSupplier speedSup) {
         this.armSubsystem = subsystem;
         addRequirements(armSubsystem);
 
         this.speedSup = speedSup;
     }
 
-    public Arm(ArmSubsystem subsystem, DoubleSupplier speedSup, DoubleSupplier angleSup) {
+    public MoveArm(ArmSubsystem subsystem, DoubleSupplier speedSup, DoubleSupplier angleSup) {
         this.armSubsystem = subsystem;
         addRequirements(armSubsystem);
 

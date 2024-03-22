@@ -23,11 +23,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void moveArm(double speed) {
+        if(getArmEncoder() < 0.09 && speed < 0) return;
+    
         leftArmMotor.set(ControlMode.PercentOutput, speed);
         rightArmMotor.set(ControlMode.PercentOutput, -speed);
     }
 
     public void moveArm(double speed, double targetAngle) {
+        if(targetAngle < 0.09 && speed < 0) return;
+
         double encoderVal = armEncoder.getOutput();
 
         leftArmMotor.set(ControlMode.PercentOutput, (targetAngle - encoderVal) * speed);

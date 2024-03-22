@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 // Commands
@@ -18,7 +19,7 @@ import frc.robot.robot.subsystems.arm.IntakeSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class RobotContainer {
-    private static final double ARM_SPEED = 0.25;
+    private static final double ARM_SPEED = 0.5;
 
     // Controllers
     private final CommandXboxController driver = new CommandXboxController(0);
@@ -40,7 +41,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         // Move the arm up and down
-        Arm armCommand = new Arm(
+        MoveArm armCommand = new MoveArm(
             armSubsystem,
             () -> (
                 operator.leftBumper().getAsBoolean()
@@ -53,23 +54,34 @@ public class RobotContainer {
 
         armSubsystem.setDefaultCommand(armCommand);
 
-        // Move the arm to the amp
-        Arm amp = new Arm(armSubsystem, () -> 5, () -> 0.11899);
-        operator.b().whileTrue(amp);
+        // Amp
+        operator.y().whileTrue(
+            new SequentialCommandGroup(
+                new MoveArm(armSubsystem, () -> 5, () -> 0.10),
+                new Shoot(shootSubsystem, () -> 1),
+                new Intake(intakeSubsystem, () -> 1)
+            )
+        );
 
-        // Move the arm to the speaker
-        Arm speaker = new Arm(armSubsystem, () -> 5, () -> 0.33);
-        operator.x().whileTrue(speaker);
+        // Speaker
+        operator.x().whileTrue(
+            new MoveArm(armSubsystem, () -> 5, () -> 0.33)
+            // new SequentialCommandGroup(
+            //     new Shoot(shootSubsystem, () -> 1),
+            //     new Intake(intakeSubsystem, () -> 1)
+            // )
+        );
 
         // Intake
-        Intake intakeCommand = new Intake(intakeSubsystem, () -> operator.getRawAxis(leftJoystick));
+        Intake intakeCommand = new Intake(intakeSubsystem, () -> operator.getRawAxis(leftJoystick)*.8);
 
         intakeSubsystem.setDefaultCommand(intakeCommand);
 
         // Shoot
         Shoot shootCommand = new Shoot(
-                shootSubsystem,
-                () -> operator.getRawAxis(rightJoystick));
+            shootSubsystem,
+            () -> operator.getRawAxis(rightJoystick)
+        );
 
         shootSubsystem.setDefaultCommand(shootCommand);
 

@@ -58,19 +58,7 @@ public class Auton extends Command {
         return MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
     }
 
-    private void shootSpeaker(Timer timer) {
-        if (timer.get() < 2) {
-            armSubsystem.moveArm(1, 0.32);
-        } 
-        else if(timer.get() < 3) {
-            shootSubsystem.shoot(1);
-        }
-        else if(timer.get() < 4) {
-            intakeSubsystem.intake(1);
-        }
-    }
-
-    // Left side of speaker
+    // Short side of speaker
     private void auton1() {
         if (timer.get() < 2) {
             armSubsystem.moveArm(1, 0.32);
@@ -81,22 +69,44 @@ public class Auton extends Command {
         else if(timer.get() < 4) {
             intakeSubsystem.intake(1);
         }
-        else if(timer.get() < 5) {
-            intakeSubsystem.stopIntake();
+        else if(timer.get() < 5.2) {
             shootSubsystem.stopShoot();
             armSubsystem.stopArm();
 
             swerveSubsystem.drive(
                 getTranslation(
-                        () -> -0.5,
-                        () -> 0.1),
-                getRotation(() -> 0),
+                        () -> -.6, //-0.6 backwards
+                        () -> .6), // right
+                getRotation(() -> -9), //0
                 true,
                 true
             );
         }
         else if(timer.get() < 7) {
+            swerveSubsystem.drive(
+                getTranslation(
+                        () -> 0.25,
+                        () -> 0.2),
+                getRotation(() -> 2
+                ),
+                true,
+                true
+            );
+            intakeSubsystem.stopIntake();
+        }
+        else if(timer.get() < 7.5) {
+            intakeSubsystem.intake(-0.1);
+        }
+        else if(timer.get() < 8) {
             swerveSubsystem.stopDrive();
+            shootSubsystem.shoot(1);
+        }
+        else if(timer.get() < 8.5) {
+            intakeSubsystem.intake(1);
+        }
+        else if(timer.get() < 10) {
+            intakeSubsystem.stopIntake();
+            shootSubsystem.stopShoot();
         }
     }
 
@@ -151,7 +161,7 @@ public class Auton extends Command {
         }
     }
 
-    // Right side of speaker
+    // Long side of speaker
     private void auton3() {
         if (timer.get() < 2) {
             armSubsystem.moveArm(1, 0.32);
@@ -163,21 +173,42 @@ public class Auton extends Command {
             intakeSubsystem.intake(1);
         }
         else if(timer.get() < 5) {
-            intakeSubsystem.stopIntake();
             shootSubsystem.stopShoot();
             armSubsystem.stopArm();
 
             swerveSubsystem.drive(
                 getTranslation(
-                        () -> -0.5,
-                        () -> -0.5),
+                        () -> -0.6,
+                        () -> -0.6),
                 getRotation(() -> 0),
                 true,
                 true
             );
         }
         else if(timer.get() < 7) {
+            swerveSubsystem.drive(
+                getTranslation(
+                        () -> 0.25,
+                        () -> 0.2),
+                getRotation(() -> 0),
+                true,
+                true
+            );
+            intakeSubsystem.stopIntake();
+        }
+        else if(timer.get() < 7.5) {
+            intakeSubsystem.intake(-0.1);
+        }
+        else if(timer.get() < 8) {
             swerveSubsystem.stopDrive();
+            shootSubsystem.shoot(1);
+        }
+        else if(timer.get() < 8.5) {
+            intakeSubsystem.intake(1);
+        }
+        else if(timer.get() < 10) {
+            intakeSubsystem.stopIntake();
+            shootSubsystem.stopShoot();
         }
     }
 

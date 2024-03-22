@@ -99,9 +99,9 @@ public class RevSwerveConfig {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 2;
+    public static final double maxSpeed = 20;
     /** Radians per Second */
-    public static final double maxAngularVelocity = 9;
+    public static final double maxAngularVelocity = 20;
 
     public RevSwerveConfig() {
         canCoderConfig = new CANcoderConfiguration();
